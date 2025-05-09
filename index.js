@@ -7,6 +7,7 @@ app.use(express.json());
 const cors = require('cors');
 const User = require("./models/user");
 const users_router = require("./routers/user_routes");
+const message_router = require("./routers/message_router");
 
 const corsOption ={
     origin : '*'
@@ -14,6 +15,7 @@ const corsOption ={
 app.use(cors(corsOption))
 
 app.use('/users/v1', users_router)
+app.use('/messages/v1', message_router)
 
 app.get('/', (req,res) =>{
     return res.send('Server is healthy...');

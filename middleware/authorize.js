@@ -31,7 +31,9 @@ function authorize() {
                 return res.status(401).json({ message: "Not authorized" })
             } else {
                 try {
-                    
+                    req.user_id = decoded.id;
+                    req.name = decoded.name;
+                    req.email = decoded.email;
                     return next();
                 } catch (error) {
                     res.status(401).send({
