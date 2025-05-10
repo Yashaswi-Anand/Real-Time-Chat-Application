@@ -5,14 +5,11 @@ const port = process.env.PORT || 8500;
 require('./config/mongoose')
 app.use(express.json());
 const cors = require('cors');
+const { Server } = require("socket.io");
 const User = require("./models/user");
 const users_router = require("./routers/user_routes");
 const message_router = require("./routers/message_router");
 
-const corsOption ={
-    origin : '*'
-}
-app.use(cors(corsOption))
 
 app.use('/users/v1', users_router)
 app.use('/messages/v1', message_router)
