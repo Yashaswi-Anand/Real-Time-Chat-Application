@@ -1,31 +1,47 @@
-const http = require('http');
 const { Server } = require("socket.io");
-const express = require("express");
-const app = express();
-const server = http.createServer(app);
 
-// Initialize Socket.io server
-const io = new Server(server, { cors: { origin: "*" } });
-
-// store online users
+let io = null;
 const userSocketMap = {};
 
-io.on('connection', (socket) => {
-    const userId = socket.handshake.query.userId;
-    console.log("User Connected", userId);
+function initSocket(server) {
+    io = new Server(server, {
+        cors: { origin: "*" }
+    });
 
-    if (userId) {
-        userSocketMap[userId] = socket.id;
-    }
+    io.on('connection', (socket) => {
+        const userId = socket.handshake.query.user_id;
+        console.log("User Connected:", userId);
 
-    // Emit the online users list
-    io.emit('getOnlineUsers', Object.keys(userSocketMap));
+        if (userId) {
+            socket.user_id = userId;
+            userSocketMap[userId] = socket.id;
+        }
 
-    socket.on('disconnect', () => {
-        console.log("User Disconnected", userId);
-        delete userSocketMap[userId];
+        // Emit updated online users to all
         io.emit('getOnlineUsers', Object.keys(userSocketMap));
-    }); 
-})
 
-module.exports = {io, userSocketMap}
+        // Respond to a specific client's request for online users
+        socket.on('requestOnlineUsers', () => {
+            socket.emit('getOnlineUsers', Object.keys(userSocketMap));
+        });
+
+        socket.on('disconnect', () => {
+            console.log("User Disconnected:", userId);
+            delete userSocketMap[userId];
+            io.emit('getOnlineUsers', Object.keys(userSocketMap));
+        });
+    });
+}
+
+function getIo() {
+    if (!io) {
+        throw new Error("Socket.io not initialized");
+    }
+    return io;
+}
+
+module.exports = {
+    initSocket,
+    getIo,
+    userSocketMap
+};

@@ -9,6 +9,4 @@ router.post('/login_user', usersController.loginUser);
 
 router.get('/get_all_users', authorize(), usersController.getAllUsers);
 
-// router.post('/delete_user', authorize(), usersController.deleteUser);
-
 module.exports = router;

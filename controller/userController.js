@@ -42,6 +42,7 @@ module.exports = {
 
             if (user_data && bcrypt.compareSync(password, user_data.password)) {
                 const data = {
+                    id: user_data._id,
                     name: user_data.name,
                     email: user_data.email,
                     jwt_token: await util.generateJwtToken(user_data),
@@ -59,7 +60,7 @@ module.exports = {
         try {
             const filterUsers = await User.find({
                 _id: { $ne: req.user_id }
-            }).select('-password'); // remove password
+            }).select('-password');
 
             const unseenMessage = { }
             const promise = filterUsers.map(async (user) => {
