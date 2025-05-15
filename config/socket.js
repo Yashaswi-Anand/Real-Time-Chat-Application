@@ -35,11 +35,11 @@ function initSocket(server) {
                 return;
             }
 
-            console.log("📨 Sending message from", sender_id, "to", receiver_id);
+            // console.log("📨 Sending message from", sender_id, "to", receiver_id);
 
             // Save to DB
             const message = await Message.create({ sender_id, receiver_id, content });
-            console.log("✅ Message saved:", message);
+            // console.log("✅ Message saved:", message);
 
             // Fetch conversation
             const messages = await Message.find({
@@ -70,7 +70,7 @@ function initSocket(server) {
                 return;
             }
 
-            console.log("📩 Fetching messages between", my_id, "and", chat_partner_id);
+            // console.log("📩 Fetching messages between", my_id, "and", chat_partner_id);
 
             const messages = await Message.find({
                 $or: [
